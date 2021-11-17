@@ -1,0 +1,65 @@
+<?php
+
+namespace Tests\Unit\Models;
+
+use PHPUnit\Framework\TestCase;
+use App\Models\VacancyLevel;
+
+class VacancyLevelTest extends TestCase
+{
+    /**
+     * A basic unit test example.
+     *
+     * @param int $remainingCount
+     * @param string $expectedMark
+     * @dataProvider dataMark
+     * @dataProvider dataSlug
+     * @return void
+     */
+    public function testMark(int $remainingCount, string $expectedMark)
+    {
+        $level = new VacancyLevel($remainingCount);
+        if (strcmp($expectedMark, "×") == 0 ||
+            strcmp($expectedMark, "△") == 0 ||
+            strcmp($expectedMark, "◎") == 0)
+            $this->assertSame($expectedMark, $level->mark());
+        else
+            $this->assertSame($expectedMark, $level->slug());
+    }
+
+    public function dataMark()
+    {
+        return [
+            '空きなし(mark)' => [
+                'remainingCount' => 0,
+                'expectedMark' => '×',
+            ],
+            '残りわずか(mark)' => [
+                'remainingCount' => 4,
+                'expectedMark' => '△',
+            ],
+            '空き十分(mark)' => [
+                'remainingCount' => 5,
+                'expectedMark' => '◎',
+            ],
+        ];
+    }
+
+    public function dataSlug()
+    {
+        return [
+            '空きなし(slug)' => [
+                'remainingCount' => 0,
+                'expectedMark' => 'empty',
+            ],
+            '残りわずか(slug)' => [
+                'remainingCount' => 4,
+                'expectedMark' => 'few',
+            ],
+            '空き十分(slug)' => [
+                'remainingCount' => 5,
+                'expectedMark' => 'enough',
+            ],
+        ];
+    }
+}
